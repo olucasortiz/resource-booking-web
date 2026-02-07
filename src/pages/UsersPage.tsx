@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react"
 import { createUser, listUsers, type User } from "../lib/api"
+import { ErrorMessage } from "../components/ErrorMessage"
+import { Loading } from "../components/Loading"
 
 export function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function load() {
     setError(null)
@@ -28,6 +31,8 @@ export function UsersPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setSubmitting(true)
+
     try {
       await createUser({ name: name.trim(), email: email.trim() })
       setName("")
@@ -35,6 +40,8 @@ export function UsersPage() {
       await load()
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -42,25 +49,49 @@ export function UsersPage() {
     <section className="card">
       <h2>Users</h2>
 
-      {error && <pre>{error}</pre>}
+      {error && <ErrorMessage message={error} />}
 
       <form onSubmit={onSubmit} className="grid">
-        <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-        <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <button disabled={!name.trim() || !email.trim()}>Create user</button>
+        <label className="field">
+          <span>Name</span>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Lucas Ortiz"
+          />
+        </label>
+
+        <label className="field">
+          <span>Email</span>
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="lucas@email.com"
+          />
+        </label>
+
+        <button className="btn" disabled={submitting || !name.trim() || !email.trim()}>
+          {submitting ? "Creating..." : "Create user"}
+        </button>
       </form>
+
+      <div className="divider" />
 
       <h3>All users</h3>
 
       {loading ? (
-        <p>Loading...</p>
+        <Loading text="Carregando users..." />
       ) : users.length === 0 ? (
-        <p>No users yet</p>
+        <p className="muted">No users yet</p>
       ) : (
-        <ul>
+        <ul className="list">
           {users.map((u) => (
-            <li key={u.id}>
-              <strong>{u.name}</strong> — {u.email} <span style={{ opacity: 0.6 }}>({u.id})</span>
+            <li key={u.id} className="row">
+              <div>
+                <strong>{u.name}</strong>
+                <div className="muted">{u.email}</div>
+              </div>
+              <code className="code">{u.id}</code>
             </li>
           ))}
         </ul>

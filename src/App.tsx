@@ -26,8 +26,8 @@ export default function App() {
             {apiStatus === "loading"
               ? "Loading..."
               : apiStatus === "online"
-              ? "Online ✅"
-              : "Offline ❌"}
+              ? "Online "
+              : "Offline "}
           </div>
         </div>
 
