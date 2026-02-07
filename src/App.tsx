@@ -1,103 +1,54 @@
 import { useEffect, useState } from "react"
-import { createResource, listResources, type Resource } from "./lib/api"
+import { UsersPage } from "./pages/UsersPage"
+import { ResourcesPage } from "./pages/ResourcesPage"
+import { BookingsPage } from "./pages/BookingsPage"
+import { getHealth } from "./lib/api"
 
-function parseResourceList(data: unknown): Resource[] {
-  if (Array.isArray(data)) return data as Resource[]
-  if (data && typeof data === "object") {
-    const obj = data as Record<string, unknown>
-    if (Array.isArray(obj.resources)) return obj.resources as Resource[]
-  }
-  return []
-}
+type Page = "users" | "resources" | "bookings"
 
 export default function App() {
-  const [resources, setResources] = useState<Resource[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const [name, setName] = useState("")
-  const [type, setType] = useState<Resource["type"]>("ROOM")
-
-  async function loadResources() {
-    setError(null)
-    setLoading(true)
-    try {
-      const data = await listResources()
-      console.log("resources response:", data)
-      //const list = Array.isArray(data) ? data : data.resources
-      setResources(parseResourceList(data))
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [page, setPage] = useState<Page>("resources")
+  const [apiStatus, setApiStatus] = useState<"loading" | "online" | "offline">("loading")
 
   useEffect(() => {
-    loadResources()
+    getHealth()
+      .then(() => setApiStatus("online"))
+      .catch(() => setApiStatus("offline"))
   }, [])
 
-  async function onCreate(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-
-    try {
-      await createResource({ name, type })
-      setName("")
-      await loadResources()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
-    }
-  }
-
   return (
-    <main style={{ fontFamily: "system-ui", padding: 24, maxWidth: 760 }}>
-      <h1>Resource Booking</h1>
+    <div style={{ fontFamily: "system-ui", padding: 24, maxWidth: 980, margin: "0 auto" }}>
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16 }}>
+        <div>
+          <h1 style={{ margin: 0 }}>Resource Booking</h1>
+          <div style={{ opacity: 0.7 }}>
+            API:{" "}
+            {apiStatus === "loading"
+              ? "Loading..."
+              : apiStatus === "online"
+              ? "Online ✅"
+              : "Offline ❌"}
+          </div>
+        </div>
 
-      <section style={{ marginTop: 24 }}>
-        <h2>Create Resource</h2>
+          <nav className="nav">
+            <button className={page === "users" ? "tab active" : "tab"} onClick={() => setPage("users")}>
+              Users
+            </button>
+            <button className={page === "resources" ? "tab active" : "tab"} onClick={() => setPage("resources")}>
+              Resources
+            </button>
+            <button className={page === "bookings" ? "tab active" : "tab"} onClick={() => setPage("bookings")}>
+              Bookings
+            </button>
+          </nav>
+      </header>
 
-        <form onSubmit={onCreate} style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Resource name"
-            style={{ padding: 8, flex: 1 }}
-          />
-
-          <select value={type} onChange={(e) => setType(e.target.value as Resource["type"])} style={{ padding: 8 }}>
-            <option value="ROOM">ROOM</option>
-            <option value="EQUIPMENT">EQUIPMENT</option>
-            <option value="COURT">COURT</option>
-          </select>
-
-          <button type="submit" disabled={!name.trim()} style={{ padding: "8px 12px" }}>
-            Create
-          </button>
-        </form>
-      </section>
-
-      <section style={{ marginTop: 24 }}>
-        <h2>Resources</h2>
-
-        {loading && <p>Loading...</p>}
-
-        {error && (
-          <pre style={{ background: "#f5f5f5", padding: 12, borderRadius: 8 }}>
-            {error}
-          </pre>
-        )}
-
-        {!loading && !error && (
-          <ul>
-            {resources.map((r) => (
-              <li key={r.id}>
-                <strong>{r.name}</strong> — {r.type} <span style={{ opacity: 0.6 }}>({r.id})</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </main>
+      <main style={{ marginTop: 20 }}>
+        {page === "users" && <UsersPage />}
+        {page === "resources" && <ResourcesPage />}
+        {page === "bookings" && <BookingsPage />}
+      </main>
+    </div>
   )
 }

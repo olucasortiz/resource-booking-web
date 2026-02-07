@@ -40,3 +40,156 @@
 .read-the-docs {
   color: #888;
 }
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+
+.toggle {
+  display: inline-flex;
+  gap: 6px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  padding: 6px;
+  border-radius: 14px;
+}
+
+.toggle button {
+  border: 0;
+  background: transparent;
+  color: rgba(234,240,255,0.85);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.toggle button.active {
+  background: rgba(124,255,155,0.18);
+  border: 1px solid rgba(124,255,155,0.35);
+}
+
+.agendaWrap {
+  display: grid;
+  gap: 10px;
+}
+
+.agendaRuler {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.agendaHoursRow {
+  position: relative;
+  height: 34px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+
+.agendaHourTick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255,255,255,0.08);
+}
+
+.agendaHourLabel {
+  position: absolute;
+  top: 8px;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: rgba(234,240,255,0.65);
+}
+
+.agendaRow {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.agendaRowTitle {
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.18);
+}
+
+.agendaTrackH {
+  position: relative;
+  height: 70px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+
+.agendaBlockH {
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(124,255,155,0.14);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  display: grid;
+  gap: 4px;
+}
+
+.agendaBlockH.canceled {
+  background: rgba(255,124,124,0.12);
+  border-color: rgba(255,124,124,0.30);
+  opacity: 0.92;
+}
+
+.agendaTopLine {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  font-weight: 800;
+}
+
+.agendaBadges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.06);
+  color: rgba(234,240,255,0.85);
+}
+
+.agendaSubLine {
+  font-size: 13px;
+  color: rgba(234,240,255,0.75);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.smallBtn {
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(234,240,255,0.85);
+  cursor: pointer;
+}
+.smallBtn:disabled { opacity: 0.55; cursor: not-allowed; }
