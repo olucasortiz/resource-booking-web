@@ -24,7 +24,7 @@ export default function App() {
           <div style={{ opacity: 0.7 }}>
             API:{" "}
             {apiStatus === "loading"
-              ? "Loading..."
+              ? "Loading  ..."
               : apiStatus === "online"
               ? "Online "
               : "Offline "}
